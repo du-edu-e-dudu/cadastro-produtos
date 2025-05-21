@@ -8,18 +8,18 @@
         /* Estilos Base */
         body {
             font-family: Arial, sans-serif;
-            margin: 0; /* Remover margem padrão do body */
-            padding: 10px; /* Adicionar um padding para respiro */
+            margin: 0;
+            padding: 10px;
             background-color: #f4f4f4;
             color: #333;
-            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura total */
+            box-sizing: border-box;
         }
 
         .container {
             max-width: 800px;
-            margin: 10px auto; /* Margem superior/inferior para respiro */
+            margin: 10px auto;
             background-color: #fff;
-            padding: 15px; /* Reduzir padding para mobile */
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -32,7 +32,7 @@
         }
 
         .form-section, .product-list-section, .report-section {
-            margin-bottom: 20px; /* Reduzir margem inferior */
+            margin-bottom: 20px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -40,37 +40,38 @@
         }
 
         .form-group {
-            margin-bottom: 12px; /* Reduzir margem inferior */
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            font-size: 0.95em; /* Ligeiramente menor */
+            font-size: 0.95em;
         }
 
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="file"] {
-            width: calc(100% - 20px); /* Ajustar largura */
+            width: calc(100% - 20px);
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 1em; /* Tamanho de fonte base */
+            font-size: 1em;
         }
 
         button {
             background-color: #007bff;
             color: white;
-            padding: 10px 12px; /* Ajustar padding */
+            padding: 10px 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 1em; /* Tamanho de fonte base */
-            margin-right: 8px; /* Ajustar margem */
-            margin-bottom: 8px; /* Adicionar margem inferior para empilhamento */
-            width: auto; /* Permitir que o botão se ajuste ao conteúdo */
+            font-size: 1em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            width: auto;
+            white-space: nowrap;
         }
 
         button:hover {
@@ -87,8 +88,8 @@
 
         button.quantity-btn {
             background-color: #28a745;
-            padding: 5px 8px; /* Reduzir padding */
-            font-size: 0.9em; /* Ligeiramente menor */
+            padding: 5px 8px;
+            font-size: 0.9em;
             margin-right: 5px;
         }
 
@@ -109,17 +110,14 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            display: block; /* Para permitir scroll horizontal se necessário */
-            overflow-x: auto; /* Adiciona scroll horizontal em telas pequenas */
-            white-space: nowrap; /* Mantém o conteúdo das células na mesma linha inicialmente */
         }
 
         #productTable th, #productTable td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
-            vertical-align: middle; /* Alinhar conteúdo verticalmente */
-            white-space: normal; /* Permite que o texto se quebre dentro da célula */
+            text-align: left; /* Padrão para desktop */
+            vertical-align: middle;
+            white-space: normal;
         }
 
         #productTable th {
@@ -132,31 +130,31 @@
             max-height: 50px;
             object-fit: cover;
             border-radius: 4px;
-            display: block; /* Para centralizar ou controlar melhor o layout */
-            margin: 0 auto;
+            display: block;
+            margin: 0 auto; /* Centraliza a imagem no desktop */
         }
 
         /* Estilos do Modal */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000; /* Z-index alto para garantir que fique por cima */
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6); /* Fundo mais escuro */
-            padding: 10px; /* Padding geral para o modal */
+            background-color: rgba(0,0,0,0.6);
+            padding: 10px;
             box-sizing: border-box;
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto; /* Ajustar margem para mobile */
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 95%; /* Usar mais largura em mobile */
+            width: 95%;
             max-width: 600px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -168,7 +166,7 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
-            line-height: 1; /* Garantir alinhamento */
+            line-height: 1;
         }
 
         .close-button:hover,
@@ -180,12 +178,12 @@
 
         .report-item {
             display: flex;
-            flex-direction: column; /* Empilhar em mobile */
-            align-items: center; /* Centralizar itens */
+            flex-direction: column;
+            align-items: center; /* Centraliza itens */
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px dashed #eee;
-            text-align: center; /* Centralizar texto */
+            text-align: center; /* Centraliza texto */
         }
 
         .report-item:last-child {
@@ -193,16 +191,16 @@
         }
 
         .report-item img {
-            width: 80px; /* Um pouco maior para o relatório */
+            width: 80px;
             height: 80px;
             object-fit: cover;
-            margin-bottom: 10px; /* Margem inferior */
+            margin-bottom: 10px;
             border-radius: 4px;
         }
 
         .report-info {
             flex-grow: 1;
-            width: 100%; /* Ocupa largura total */
+            width: 100%;
         }
 
         .report-info p {
@@ -212,11 +210,11 @@
         }
 
         .modal-footer {
-            text-align: center; /* Centralizar botão no footer do modal */
+            text-align: center;
             margin-top: 20px;
         }
 
-        /* Media Queries para Telas Menores (smartphones) */
+        /* Media Queries para Telas Menores (smartphones e tablets pequenos) */
         @media (max-width: 768px) {
             .container {
                 margin: 5px auto;
@@ -237,36 +235,32 @@
                 font-size: 0.95em;
             }
 
-            button {
-                width: calc(50% - 12px); /* Tenta dividir em duas colunas */
+            /* Botões de formulário: 2 colunas */
+            .form-section button {
+                width: calc(50% - 12px);
                 box-sizing: border-box;
                 margin-right: 8px;
                 margin-bottom: 8px;
             }
-            /* Garantir que o botão de relatório use a largura total se for o último */
-            #generateReportBtn, #addProductBtn {
-                width: calc(50% - 10px);
-            }
-            #generateReportBtn:last-child {
-                margin-right: 0;
-            }
-            /* Se houver um número ímpar de botões e o último for ímpar */
-            .form-section button:nth-last-child(1):nth-child(odd) {
+            .form-section button:last-child:nth-of-type(odd) {
                 width: 100%;
                 margin-right: 0;
             }
 
-            .product-actions {
-                flex-wrap: wrap; /* Permite que os botões quebrem linha */
-                justify-content: center; /* Centraliza os botões */
-            }
-            .product-actions button {
-                margin: 5px; /* Espaçamento entre os botões */
+            /* Adaptação da Tabela para telas pequenas (modo "cards") */
+            #productTable {
+                display: block;
+                overflow-x: hidden;
+                width: 100%;
             }
 
-            /* Adaptação da Tabela para telas pequenas */
             #productTable thead {
-                display: none; /* Esconde o cabeçalho da tabela */
+                display: none;
+            }
+
+            #productTable tbody {
+                display: block;
+                width: 100%;
             }
 
             #productTable tr {
@@ -276,39 +270,61 @@
                 border-radius: 5px;
                 background-color: #fff;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                padding: 10px;
+                text-align: center; /* Centraliza o conteúdo do card TR */
             }
 
             #productTable td {
                 display: block;
-                text-align: center; /* Centraliza o texto das células */
-                border: none; /* Remove bordas internas */
-                padding: 8px 5px;
-                position: relative; /* Para o pseudo-elemento */
+                text-align: center; /* Garante que o texto dentro do TD esteja centralizado */
+                border: none;
+                padding: 5px 0;
+                position: relative;
             }
 
             #productTable td::before {
-                content: attr(data-label); /* Usa o atributo data-label como "cabeçalho" */
+                content: attr(data-label);
                 font-weight: bold;
                 display: block;
-                margin-bottom: 5px;
+                margin-bottom: 3px;
                 color: #0056b3;
-                font-size: 0.85em;
+                font-size: 0.8em;
             }
 
-            /* Aplica os data-labels para cada célula */
             #productTable td:nth-of-type(1)::before { content: "Imagem:"; }
             #productTable td:nth-of-type(2)::before { content: "Nome:"; }
             #productTable td:nth-of-type(3)::before { content: "Quantidade:"; }
             #productTable td:nth-of-type(4)::before { content: "Ações:"; }
 
+            #productTable td img {
+                max-width: 60px;
+                max-height: 60px;
+                margin: 0 auto 5px auto; /* Centraliza a imagem no card */
+            }
+
+            .product-actions {
+                display: flex;
+                justify-content: center; /* Centraliza os botões de ação */
+                flex-wrap: wrap;
+                margin-top: 5px;
+            }
+
+            .product-actions button {
+                width: auto;
+                margin: 3px;
+                font-size: 0.9em;
+                padding: 6px 10px;
+            }
+
+            /* Estilos para o relatório HTML dentro do modal em telas menores */
             .report-item {
-                flex-direction: column; /* Certifica que os itens do relatório empilham */
+                flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
             .report-item img {
-                margin-right: 0; /* Remove margem lateral */
-                margin-bottom: 10px; /* Adiciona margem inferior */
+                margin-right: 0;
+                margin-bottom: 10px;
             }
         }
 
@@ -317,12 +333,12 @@
             h1 { font-size: 1.5em; }
             h2 { font-size: 1.2em; }
             .form-group input { font-size: 0.9em; }
-            button {
-                width: 100%; /* Botões ocupam largura total */
+            .form-section button {
+                width: 100%;
                 margin-right: 0;
             }
             .product-actions button {
-                width: calc(50% - 10px); /* Botões de ação em duas colunas */
+                width: calc(50% - 10px);
                 margin: 5px;
             }
             .modal-content {
@@ -359,7 +375,7 @@
         }
         .report-html-item {
             display: flex;
-            flex-direction: column; /* Padrão empilhado */
+            flex-direction: column;
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
@@ -387,10 +403,9 @@
             color: #007bff;
         }
 
-        /* Media query para o relatório HTML em telas maiores */
         @media (min-width: 601px) {
             .report-html-item {
-                flex-direction: row; /* Volta para linha em telas maiores */
+                flex-direction: row;
                 align-items: center;
                 text-align: left;
             }
@@ -453,7 +468,18 @@
     </div>
 
     <script>
-        const products = []; // Array para armazenar os produtos
+        let products = [];
+
+        function loadProductsFromLocalStorage() {
+            const storedProducts = localStorage.getItem('productsData');
+            if (storedProducts) {
+                products = JSON.parse(storedProducts);
+            }
+        }
+
+        function saveProductsToLocalStorage() {
+            localStorage.setItem('productsData', JSON.stringify(products));
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const addProductBtn = document.getElementById('addProductBtn');
@@ -463,6 +489,9 @@
             const closeButton = document.querySelector('.close-button');
             const reportContent = document.getElementById('reportContent');
             const downloadReportBtn = document.getElementById('downloadReportBtn');
+
+            loadProductsFromLocalStorage();
+            renderProductList();
 
             addProductBtn.addEventListener('click', addProduct);
             generateReportBtn.addEventListener('click', generateReport);
@@ -512,6 +541,7 @@
             function createProduct(product) {
                 products.push(product);
                 renderProductList();
+                saveProductsToLocalStorage();
             }
 
             function renderProductList() {
@@ -519,7 +549,6 @@
                 products.forEach((product, index) => {
                     const row = productList.insertRow();
 
-                    // Adicionar data-label para responsividade da tabela
                     const imgCell = row.insertCell(0);
                     imgCell.setAttribute('data-label', 'Imagem');
                     if (product.imageUrl) {
@@ -571,6 +600,7 @@
                     if (newQuantity >= 0) {
                         products[index].quantity = newQuantity;
                         document.getElementById(`quantity-${index}`).textContent = newQuantity;
+                        saveProductsToLocalStorage();
                     } else {
                         alert('A quantidade não pode ser negativa.');
                     }
@@ -581,6 +611,7 @@
                 if (confirm('Tem certeza que deseja excluir este produto?')) {
                     products.splice(index, 1);
                     renderProductList();
+                    saveProductsToLocalStorage();
                 }
             }
 
@@ -649,7 +680,7 @@
                             }
                             .report-html-item {
                                 display: flex;
-                                flex-direction: column; /* Padrão empilhado */
+                                flex-direction: column;
                                 align-items: center;
                                 margin-bottom: 15px;
                                 padding-bottom: 10px;
@@ -677,10 +708,9 @@
                                 color: #007bff;
                             }
 
-                            /* Media query para o relatório HTML em telas maiores */
                             @media (min-width: 601px) {
                                 .report-html-item {
-                                    flex-direction: row; /* Volta para linha em telas maiores */
+                                    flex-direction: row;
                                     align-items: center;
                                     text-align: left;
                                 }
