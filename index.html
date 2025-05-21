@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Produtos</title>
     <style>
+        /* Estilos Base */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0; /* Remover margem padrão do body */
+            padding: 10px; /* Adicionar um padding para respiro */
             background-color: #f4f4f4;
             color: #333;
+            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura total */
         }
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 10px auto; /* Margem superior/inferior para respiro */
             background-color: #fff;
-            padding: 20px;
+            padding: 15px; /* Reduzir padding para mobile */
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -24,10 +27,12 @@
         h1, h2 {
             text-align: center;
             color: #0056b3;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
 
         .form-section, .product-list-section, .report-section {
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Reduzir margem inferior */
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -35,44 +40,37 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Reduzir margem inferior */
         }
 
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 0.95em; /* Ligeiramente menor */
         }
 
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="file"] {
-            width: calc(100% - 22px);
+            width: calc(100% - 20px); /* Ajustar largura */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .form-group input[type="number"] {
-            -moz-appearance: textfield; /* Firefox */
-        }
-
-        .form-group input[type="number"]::-webkit-outer-spin-button,
-        .form-group input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+            font-size: 1em; /* Tamanho de fonte base */
         }
 
         button {
             background-color: #007bff;
             color: white;
-            padding: 10px 15px;
+            padding: 10px 12px; /* Ajustar padding */
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
+            font-size: 1em; /* Tamanho de fonte base */
+            margin-right: 8px; /* Ajustar margem */
+            margin-bottom: 8px; /* Adicionar margem inferior para empilhamento */
+            width: auto; /* Permitir que o botão se ajuste ao conteúdo */
         }
 
         button:hover {
@@ -89,8 +87,9 @@
 
         button.quantity-btn {
             background-color: #28a745;
-            padding: 5px 10px;
-            font-size: 14px;
+            padding: 5px 8px; /* Reduzir padding */
+            font-size: 0.9em; /* Ligeiramente menor */
+            margin-right: 5px;
         }
 
         button.quantity-btn:hover {
@@ -105,50 +104,22 @@
             background-color: #5a6268;
         }
 
-        .product-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .product-item:last-child {
-            border-bottom: none;
-        }
-
-        .product-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            margin-right: 15px;
-            border-radius: 4px;
-        }
-
-        .product-info {
-            flex-grow: 1;
-        }
-
-        .product-info p {
-            margin: 0;
-            padding: 2px 0;
-        }
-
-        .product-actions {
-            display: flex;
-            align-items: center;
-        }
-
+        /* Estilos da Tabela de Produtos */
         #productTable {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            display: block; /* Para permitir scroll horizontal se necessário */
+            overflow-x: auto; /* Adiciona scroll horizontal em telas pequenas */
+            white-space: nowrap; /* Mantém o conteúdo das células na mesma linha inicialmente */
         }
 
         #productTable th, #productTable td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            vertical-align: middle; /* Alinhar conteúdo verticalmente */
+            white-space: normal; /* Permite que o texto se quebre dentro da célula */
         }
 
         #productTable th {
@@ -156,25 +127,36 @@
             color: white;
         }
 
+        #productTable td img {
+            max-width: 50px;
+            max-height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block; /* Para centralizar ou controlar melhor o layout */
+            margin: 0 auto;
+        }
+
+        /* Estilos do Modal */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000; /* Z-index alto para garantir que fique por cima */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
+            background-color: rgba(0,0,0,0.6); /* Fundo mais escuro */
+            padding: 10px; /* Padding geral para o modal */
+            box-sizing: border-box;
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto;
+            margin: 10% auto; /* Ajustar margem para mobile */
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 95%; /* Usar mais largura em mobile */
             max-width: 600px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -186,6 +168,7 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
+            line-height: 1; /* Garantir alinhamento */
         }
 
         .close-button:hover,
@@ -197,10 +180,12 @@
 
         .report-item {
             display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+            flex-direction: column; /* Empilhar em mobile */
+            align-items: center; /* Centralizar itens */
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px dashed #eee;
+            text-align: center; /* Centralizar texto */
         }
 
         .report-item:last-child {
@@ -208,58 +193,160 @@
         }
 
         .report-item img {
-            width: 70px;
-            height: 70px;
+            width: 80px; /* Um pouco maior para o relatório */
+            height: 80px;
             object-fit: cover;
-            margin-right: 15px;
+            margin-bottom: 10px; /* Margem inferior */
             border-radius: 4px;
         }
 
         .report-info {
             flex-grow: 1;
+            width: 100%; /* Ocupa largura total */
         }
 
         .report-info p {
             margin: 0;
             padding: 2px 0;
+            font-size: 0.95em;
         }
 
         .modal-footer {
-            text-align: right;
+            text-align: center; /* Centralizar botão no footer do modal */
             margin-top: 20px;
         }
 
-        @media (max-width: 600px) {
-            .product-item {
-                flex-direction: column;
-                align-items: flex-start;
+        /* Media Queries para Telas Menores (smartphones) */
+        @media (max-width: 768px) {
+            .container {
+                margin: 5px auto;
+                padding: 10px;
             }
-            .product-actions {
-                margin-top: 10px;
-                width: 100%;
-                justify-content: space-around;
+
+            h1 {
+                font-size: 1.8em;
             }
-            .product-item img {
-                margin-bottom: 10px;
+
+            h2 {
+                font-size: 1.4em;
             }
+
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group input[type="file"] {
+                font-size: 0.95em;
+            }
+
             button {
-                width: auto;
+                width: calc(50% - 12px); /* Tenta dividir em duas colunas */
+                box-sizing: border-box;
+                margin-right: 8px;
+                margin-bottom: 8px;
+            }
+            /* Garantir que o botão de relatório use a largura total se for o último */
+            #generateReportBtn, #addProductBtn {
+                width: calc(50% - 10px);
+            }
+            #generateReportBtn:last-child {
+                margin-right: 0;
+            }
+            /* Se houver um número ímpar de botões e o último for ímpar */
+            .form-section button:nth-last-child(1):nth-child(odd) {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .product-actions {
+                flex-wrap: wrap; /* Permite que os botões quebrem linha */
+                justify-content: center; /* Centraliza os botões */
+            }
+            .product-actions button {
+                margin: 5px; /* Espaçamento entre os botões */
+            }
+
+            /* Adaptação da Tabela para telas pequenas */
+            #productTable thead {
+                display: none; /* Esconde o cabeçalho da tabela */
+            }
+
+            #productTable tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            #productTable td {
+                display: block;
+                text-align: center; /* Centraliza o texto das células */
+                border: none; /* Remove bordas internas */
+                padding: 8px 5px;
+                position: relative; /* Para o pseudo-elemento */
+            }
+
+            #productTable td::before {
+                content: attr(data-label); /* Usa o atributo data-label como "cabeçalho" */
+                font-weight: bold;
+                display: block;
                 margin-bottom: 5px;
+                color: #0056b3;
+                font-size: 0.85em;
+            }
+
+            /* Aplica os data-labels para cada célula */
+            #productTable td:nth-of-type(1)::before { content: "Imagem:"; }
+            #productTable td:nth-of-type(2)::before { content: "Nome:"; }
+            #productTable td:nth-of-type(3)::before { content: "Quantidade:"; }
+            #productTable td:nth-of-type(4)::before { content: "Ações:"; }
+
+            .report-item {
+                flex-direction: column; /* Certifica que os itens do relatório empilham */
+                align-items: center;
+                text-align: center;
+            }
+            .report-item img {
+                margin-right: 0; /* Remove margem lateral */
+                margin-bottom: 10px; /* Adiciona margem inferior */
+            }
+        }
+
+        /* Ajustes para telas muito pequenas (ex: largura de 320px) */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.5em; }
+            h2 { font-size: 1.2em; }
+            .form-group input { font-size: 0.9em; }
+            button {
+                width: 100%; /* Botões ocupam largura total */
+                margin-right: 0;
+            }
+            .product-actions button {
+                width: calc(50% - 10px); /* Botões de ação em duas colunas */
+                margin: 5px;
+            }
+            .modal-content {
+                padding: 15px;
+            }
+            .report-item img {
+                width: 60px;
+                height: 60px;
             }
         }
 
         /* Estilos específicos para o relatório HTML baixado */
         .report-html-body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
+            margin: 0;
+            padding: 10px;
             background-color: #fff;
             color: #333;
+            box-sizing: border-box;
         }
         .report-html-container {
             max-width: 700px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 10px auto;
+            padding: 15px;
             border: 1px solid #eee;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 8px;
@@ -267,33 +354,50 @@
         .report-html-container h1 {
             text-align: center;
             color: #0056b3;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
         }
         .report-html-item {
             display: flex;
+            flex-direction: column; /* Padrão empilhado */
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
             border-bottom: 1px dashed #ddd;
+            text-align: center;
         }
         .report-html-item:last-child {
             border-bottom: none;
         }
         .report-html-item img {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             object-fit: cover;
-            margin-right: 20px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            flex-shrink: 0; /* Impede a imagem de encolher */
+            flex-shrink: 0;
         }
         .report-html-info p {
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.4;
+            font-size: 0.95em;
         }
         .report-html-info strong {
             color: #007bff;
+        }
+
+        /* Media query para o relatório HTML em telas maiores */
+        @media (min-width: 601px) {
+            .report-html-item {
+                flex-direction: row; /* Volta para linha em telas maiores */
+                align-items: center;
+                text-align: left;
+            }
+            .report-html-item img {
+                margin-right: 20px;
+                margin-bottom: 0;
+            }
         }
     </style>
 </head>
@@ -362,7 +466,7 @@
 
             addProductBtn.addEventListener('click', addProduct);
             generateReportBtn.addEventListener('click', generateReport);
-            downloadReportBtn.addEventListener('click', downloadHtmlReport); // Baixar como HTML
+            downloadReportBtn.addEventListener('click', downloadHtmlReport);
             closeButton.addEventListener('click', () => reportModal.style.display = 'none');
             window.addEventListener('click', (event) => {
                 if (event.target == reportModal) {
@@ -400,7 +504,6 @@
                     createProduct({ name, quantity, imageUrl: '' });
                 }
 
-                // Limpar campos
                 productNameInput.value = '';
                 productQuantityInput.value = '0';
                 productImageInput.value = '';
@@ -412,11 +515,13 @@
             }
 
             function renderProductList() {
-                productList.innerHTML = ''; // Limpa a lista antes de renderizar
+                productList.innerHTML = '';
                 products.forEach((product, index) => {
                     const row = productList.insertRow();
 
+                    // Adicionar data-label para responsividade da tabela
                     const imgCell = row.insertCell(0);
+                    imgCell.setAttribute('data-label', 'Imagem');
                     if (product.imageUrl) {
                         const img = document.createElement('img');
                         img.src = product.imageUrl;
@@ -427,13 +532,16 @@
                     }
 
                     const nameCell = row.insertCell(1);
+                    nameCell.setAttribute('data-label', 'Nome');
                     nameCell.textContent = product.name;
 
                     const quantityCell = row.insertCell(2);
+                    quantityCell.setAttribute('data-label', 'Quantidade');
                     quantityCell.textContent = product.quantity;
-                    quantityCell.id = `quantity-${index}`; // ID para facilitar a atualização
+                    quantityCell.id = `quantity-${index}`;
 
                     const actionsCell = row.insertCell(3);
+                    actionsCell.setAttribute('data-label', 'Ações');
                     actionsCell.classList.add('product-actions');
 
                     const decreaseBtn = document.createElement('button');
@@ -508,7 +616,6 @@
                 reportModal.style.display = 'block';
             }
 
-            // NOVA FUNÇÃO: Baixar relatório como arquivo HTML
             function downloadHtmlReport() {
                 let reportHtml = `
                     <!DOCTYPE html>
@@ -520,15 +627,16 @@
                         <style>
                             .report-html-body {
                                 font-family: Arial, sans-serif;
-                                margin: 20px;
-                                padding: 0;
+                                margin: 0;
+                                padding: 10px;
                                 background-color: #fff;
                                 color: #333;
+                                box-sizing: border-box;
                             }
                             .report-html-container {
                                 max-width: 700px;
-                                margin: 20px auto;
-                                padding: 20px;
+                                margin: 10px auto;
+                                padding: 15px;
                                 border: 1px solid #eee;
                                 box-shadow: 0 0 10px rgba(0,0,0,0.1);
                                 border-radius: 8px;
@@ -536,33 +644,50 @@
                             .report-html-container h1 {
                                 text-align: center;
                                 color: #0056b3;
-                                margin-bottom: 30px;
+                                margin-bottom: 20px;
+                                font-size: 1.8em;
                             }
                             .report-html-item {
                                 display: flex;
+                                flex-direction: column; /* Padrão empilhado */
                                 align-items: center;
-                                margin-bottom: 20px;
-                                padding-bottom: 15px;
+                                margin-bottom: 15px;
+                                padding-bottom: 10px;
                                 border-bottom: 1px dashed #ddd;
+                                text-align: center;
                             }
                             .report-html-item:last-child {
                                 border-bottom: none;
                             }
                             .report-html-item img {
-                                width: 100px;
-                                height: 100px;
+                                width: 90px;
+                                height: 90px;
                                 object-fit: cover;
-                                margin-right: 20px;
+                                margin-bottom: 10px;
                                 border: 1px solid #ccc;
                                 border-radius: 4px;
                                 flex-shrink: 0;
                             }
                             .report-html-info p {
                                 margin: 0;
-                                line-height: 1.5;
+                                line-height: 1.4;
+                                font-size: 0.95em;
                             }
                             .report-html-info strong {
                                 color: #007bff;
+                            }
+
+                            /* Media query para o relatório HTML em telas maiores */
+                            @media (min-width: 601px) {
+                                .report-html-item {
+                                    flex-direction: row; /* Volta para linha em telas maiores */
+                                    align-items: center;
+                                    text-align: left;
+                                }
+                                .report-html-item img {
+                                    margin-right: 20px;
+                                    margin-bottom: 0;
+                                }
                             }
                         </style>
                     </head>
@@ -597,11 +722,11 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'relatorio_produtos.html'; // Nome do arquivo para download
+                a.download = 'relatorio_produtos.html';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(url); // Libera o objeto URL
+                URL.revokeObjectURL(url);
             }
         });
     </script>
