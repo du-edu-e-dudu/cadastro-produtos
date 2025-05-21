@@ -247,6 +247,54 @@
                 margin-bottom: 5px;
             }
         }
+
+        /* Estilos específicos para o relatório HTML baixado */
+        .report-html-body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+        }
+        .report-html-container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .report-html-container h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+        }
+        .report-html-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .report-html-item:last-child {
+            border-bottom: none;
+        }
+        .report-html-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex-shrink: 0; /* Impede a imagem de encolher */
+        }
+        .report-html-info p {
+            margin: 0;
+            line-height: 1.5;
+        }
+        .report-html-info strong {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -295,7 +343,7 @@
             <div id="reportContent">
                 </div>
             <div class="modal-footer">
-                <button id="downloadReportBtn" class="download-btn">Baixar Relatório</button>
+                <button id="downloadReportBtn" class="download-btn">Baixar Relatório HTML</button>
             </div>
         </div>
     </div>
@@ -310,11 +358,11 @@
             const reportModal = document.getElementById('reportModal');
             const closeButton = document.querySelector('.close-button');
             const reportContent = document.getElementById('reportContent');
-            const downloadReportBtn = document.getElementById('downloadReportBtn'); // Novo botão
+            const downloadReportBtn = document.getElementById('downloadReportBtn');
 
             addProductBtn.addEventListener('click', addProduct);
             generateReportBtn.addEventListener('click', generateReport);
-            downloadReportBtn.addEventListener('click', downloadReport); // Evento para baixar o relatório
+            downloadReportBtn.addEventListener('click', downloadHtmlReport); // Baixar como HTML
             closeButton.addEventListener('click', () => reportModal.style.display = 'none');
             window.addEventListener('click', (event) => {
                 if (event.target == reportModal) {
@@ -414,7 +462,7 @@
                     const newQuantity = currentQuantity + change;
                     if (newQuantity >= 0) {
                         products[index].quantity = newQuantity;
-                        document.getElementById(`quantity-${index}`).textContent = newQuantity; // Atualiza apenas o texto da quantidade
+                        document.getElementById(`quantity-${index}`).textContent = newQuantity;
                     } else {
                         alert('A quantidade não pode ser negativa.');
                     }
@@ -423,17 +471,17 @@
 
             function deleteProduct(index) {
                 if (confirm('Tem certeza que deseja excluir este produto?')) {
-                    products.splice(index, 1); // Remove o produto do array
-                    renderProductList(); // Renderiza a lista novamente
+                    products.splice(index, 1);
+                    renderProductList();
                 }
             }
 
             function generateReport() {
-                reportContent.innerHTML = ''; // Limpa o conteúdo anterior do relatório
+                reportContent.innerHTML = '';
 
                 if (products.length === 0) {
                     reportContent.innerHTML = '<p>Nenhum produto cadastrado para gerar relatório.</p>';
-                    downloadReportBtn.style.display = 'none'; // Esconde o botão se não houver produtos
+                    downloadReportBtn.style.display = 'none';
                 } else {
                     products.forEach(product => {
                         const reportItem = document.createElement('div');
@@ -455,32 +503,101 @@
                         reportItem.appendChild(infoDiv);
                         reportContent.appendChild(reportItem);
                     });
-                    downloadReportBtn.style.display = 'block'; // Mostra o botão se houver produtos
+                    downloadReportBtn.style.display = 'block';
                 }
-                reportModal.style.display = 'block'; // Exibe o modal
+                reportModal.style.display = 'block';
             }
 
-            function downloadReport() {
-                let reportText = "Relatório de Produtos:\n\n";
+            // NOVA FUNÇÃO: Baixar relatório como arquivo HTML
+            function downloadHtmlReport() {
+                let reportHtml = `
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Relatório de Produtos</title>
+                        <style>
+                            .report-html-body {
+                                font-family: Arial, sans-serif;
+                                margin: 20px;
+                                padding: 0;
+                                background-color: #fff;
+                                color: #333;
+                            }
+                            .report-html-container {
+                                max-width: 700px;
+                                margin: 20px auto;
+                                padding: 20px;
+                                border: 1px solid #eee;
+                                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                                border-radius: 8px;
+                            }
+                            .report-html-container h1 {
+                                text-align: center;
+                                color: #0056b3;
+                                margin-bottom: 30px;
+                            }
+                            .report-html-item {
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 20px;
+                                padding-bottom: 15px;
+                                border-bottom: 1px dashed #ddd;
+                            }
+                            .report-html-item:last-child {
+                                border-bottom: none;
+                            }
+                            .report-html-item img {
+                                width: 100px;
+                                height: 100px;
+                                object-fit: cover;
+                                margin-right: 20px;
+                                border: 1px solid #ccc;
+                                border-radius: 4px;
+                                flex-shrink: 0;
+                            }
+                            .report-html-info p {
+                                margin: 0;
+                                line-height: 1.5;
+                            }
+                            .report-html-info strong {
+                                color: #007bff;
+                            }
+                        </style>
+                    </head>
+                    <body class="report-html-body">
+                        <div class="report-html-container">
+                            <h1>Relatório de Produtos</h1>
+                `;
 
                 if (products.length === 0) {
-                    reportText += "Nenhum produto cadastrado.\n";
+                    reportHtml += '<p>Nenhum produto cadastrado para o relatório.</p>';
                 } else {
                     products.forEach(product => {
-                        reportText += `Nome: ${product.name}\n`;
-                        reportText += `Quantidade: ${product.quantity}\n`;
-                        if (product.imageUrl) {
-                            reportText += `Imagem: (URL de dados - não incluída no arquivo de texto para simplicidade)\n`;
-                        }
-                        reportText += "--------------------\n";
+                        reportHtml += `
+                            <div class="report-html-item">
+                                ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}">` : ''}
+                                <div class="report-html-info">
+                                    <p><strong>Nome:</strong> ${product.name}</p>
+                                    <p><strong>Quantidade:</strong> ${product.quantity}</p>
+                                </div>
+                            </div>
+                        `;
                     });
                 }
 
-                const blob = new Blob([reportText], { type: 'text/plain' });
+                reportHtml += `
+                        </div>
+                    </body>
+                    </html>
+                `;
+
+                const blob = new Blob([reportHtml], { type: 'text/html' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'relatorio_produtos.txt';
+                a.download = 'relatorio_produtos.html'; // Nome do arquivo para download
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
