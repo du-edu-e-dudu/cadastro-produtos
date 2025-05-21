@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .form-cadastro {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-cadastro label {
+            font-weight: bold;
+        }
+
+        .form-cadastro input[type="text"],
+        .form-cadastro input[type="number"],
+        .form-cadastro input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .form-cadastro button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-cadastro button:hover {
+            background-color: #218838;
+        }
+
+        #lista-produtos {
+            margin-top: 20px;
+        }
+
+        .produto-item {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .produto-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .produto-info img {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .produto-info span {
+            font-size: 16px;
+        }
+
+        .produto-acoes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px; /* Para responsividade em telas menores */
+        }
+
+        .produto-acoes button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-aumentar {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-aumentar:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-diminuir {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .btn-diminuir:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-excluir {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-excluir:hover {
+            background-color: #c82333;
+        }
+
+        #btn-gerar-relatorio {
+            padding: 12px 20px;
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        #btn-gerar-relatorio:hover {
+            background-color: #138496;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #relatorio-conteudo table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #relatorio-conteudo th, #relatorio-conteudo td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #relatorio-conteudo th {
+            background-color: #f2f2f2;
+        }
+
+        #relatorio-conteudo img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 4px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .produto-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .produto-info {
+                margin-bottom: 10px;
+                width: 100%; /* Garante que a imagem não estoure */
+            }
+
+            .produto-info span { /* Limita o texto do nome do produto */
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: calc(100% - 80px); /* Ajuste conforme necessário */
+            }
+
+
+            .produto-acoes {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .form-cadastro {
+                padding: 15px;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cadastro de Produtos</h1>
+
+        <form id="form-produto" class="form-cadastro">
+            <div>
+                <label for="nome-produto">Nome do Produto:</label>
+                <input type="text" id="nome-produto" required>
+            </div>
+            <div>
+                <label for="qtd-produto">Quantidade Disponível:</label>
+                <input type="number" id="qtd-produto" min="0" value="0" required>
+            </div>
+            <div>
+                <label for="img-produto">Imagem do Produto:</label>
+                <input type="file" id="img-produto" accept="image/*">
+            </div>
+            <button type="submit">Adicionar Produto</button>
+        </form>
+
+        <h2>Lista de Produtos</h2>
+        <div id="lista-produtos">
+            </div>
+
+        <button id="btn-gerar-relatorio">Gerar Relatório</button>
+    </div>
+
+    <div id="modal-relatorio" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Relatório de Produtos</h2>
+            <div id="relatorio-conteudo">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const formProduto = document.getElementById('form-produto');
+            const listaProdutosDiv = document.getElementById('lista-produtos');
+            const btnGerarRelatorio = document.getElementById('btn-gerar-relatorio');
+            const modalRelatorio = document.getElementById('modal-relatorio');
+            const spanCloseButton = document.querySelector('.close-button');
+            const relatorioConteudoDiv = document.getElementById('relatorio-conteudo');
+
+            let produtos = []; // Array para armazenar os produtos em memória
+            let proximoId = 1; // Para gerar IDs únicos para os produtos
+
+            formProduto.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const nomeProdutoInput = document.getElementById('nome-produto');
+                const qtdProdutoInput = document.getElementById('qtd-produto');
+                const imgProdutoInput = document.getElementById('img-produto');
+
+                const nome = nomeProdutoInput.value.trim();
+                const quantidade = parseInt(qtdProdutoInput.value);
+                const imagemFile = imgProdutoInput.files[0];
+
+                if (nome === '' || isNaN(quantidade)) {
+                    alert('Por favor, preencha o nome e a quantidade do produto.');
+                    return;
+                }
+
+                const novoProduto = {
+                    id: proximoId++,
+                    nome: nome,
+                    quantidade: quantidade,
+                    imagemUrl: null // Será definido após a leitura do arquivo
+                };
+
+                if (imagemFile) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        novoProduto.imagemUrl = e.target.result;
+                        adicionarProdutoNaLista(novoProduto);
+                    };
+                    reader.readAsDataURL(imagemFile);
+                } else {
+                    adicionarProdutoNaLista(novoProduto);
+                }
+
+                formProduto.reset(); // Limpa o formulário
+            });
+
+            function adicionarProdutoNaLista(produto) {
+                produtos.push(produto);
+                renderizarListaProdutos();
+            }
+
+            function renderizarListaProdutos() {
+                listaProdutosDiv.innerHTML = ''; // Limpa a lista atual
+
+                if (produtos.length === 0) {
+                    listaProdutosDiv.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+                    return;
+                }
+
+                produtos.forEach(produto => {
+                    const produtoItemDiv = document.createElement('div');
+                    produtoItemDiv.classList.add('produto-item');
+                    produtoItemDiv.setAttribute('data-id', produto.id);
+
+                    const produtoInfoDiv = document.createElement('div');
+                    produtoInfoDiv.classList.add('produto-info');
+
+                    const imgElement = document.createElement('img');
+                    imgElement.src = produto.imagemUrl || 'https://via.placeholder.com/60?text=Sem+Imagem'; // Imagem placeholder
+                    imgElement.alt = produto.nome;
+
+                    const nomeSpan = document.createElement('span');
+                    nomeSpan.textContent = `${produto.nome} - `;
+
+                    const qtdSpan = document.createElement('span');
+                    qtdSpan.classList.add('qtd-atual');
+                    qtdSpan.textContent = `Qtd: ${produto.quantidade}`;
+
+                    produtoInfoDiv.appendChild(imgElement);
+                    produtoInfoDiv.appendChild(nomeSpan);
+                    produtoInfoDiv.appendChild(qtdSpan);
+
+                    const produtoAcoesDiv = document.createElement('div');
+                    produtoAcoesDiv.classList.add('produto-acoes');
+
+                    const btnAumentar = document.createElement('button');
+                    btnAumentar.classList.add('btn-aumentar');
+                    btnAumentar.textContent = '+';
+                    btnAumentar.addEventListener('click', () => aumentarQuantidade(produto.id));
+
+                    const btnDiminuir = document.createElement('button');
+                    btnDiminuir.classList.add('btn-diminuir');
+                    btnDiminuir.textContent = '−';
+                    btnDiminuir.addEventListener('click', () => diminuirQuantidade(produto.id));
+
+                    const btnExcluir = document.createElement('button');
+                    btnExcluir.classList.add('btn-excluir');
+                    btnExcluir.textContent = 'Excluir';
+                    btnExcluir.addEventListener('click', () => excluirProduto(produto.id));
+
+                    produtoAcoesDiv.appendChild(btnAumentar);
+                    produtoAcoesDiv.appendChild(btnDiminuir);
+                    produtoAcoesDiv.appendChild(btnExcluir);
+
+                    produtoItemDiv.appendChild(produtoInfoDiv);
+                    produtoItemDiv.appendChild(produtoAcoesDiv);
+
+                    listaProdutosDiv.appendChild(produtoItemDiv);
+                });
+            }
+
+            function aumentarQuantidade(idProduto) {
+                const produto = produtos.find(p => p.id === idProduto);
+                if (produto) {
+                    produto.quantidade++;
+                    atualizarQuantidadeNaTela(idProduto, produto.quantidade);
+                }
+            }
+
+            function diminuirQuantidade(idProduto) {
+                const produto = produtos.find(p => p.id === idProduto);
+                if (produto && produto.quantidade > 0) {
+                    produto.quantidade--;
+                    atualizarQuantidadeNaTela(idProduto, produto.quantidade);
+                }
+            }
+
+            function excluirProduto(idProduto) {
+                produtos = produtos.filter(p => p.id !== idProduto);
+                renderizarListaProdutos();
+            }
+
+            function atualizarQuantidadeNaTela(idProduto, novaQuantidade) {
+                const produtoItemDiv = listaProdutosDiv.querySelector(`.produto-item[data-id='${idProduto}']`);
+                if (produtoItemDiv) {
+                    const qtdSpan = produtoItemDiv.querySelector('.qtd-atual');
+                    if (qtdSpan) {
+                        qtdSpan.textContent = `Qtd: ${novaQuantidade}`;
+                    }
+                }
+            }
+
+            // Funcionalidade do Modal
+            btnGerarRelatorio.addEventListener('click', () => {
+                gerarConteudoRelatorio();
+                modalRelatorio.style.display = 'block';
+            });
+
+            spanCloseButton.addEventListener('click', () => {
+                modalRelatorio.style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === modalRelatorio) {
+                    modalRelatorio.style.display = 'none';
+                }
+            });
+
+            function gerarConteudoRelatorio() {
+                relatorioConteudoDiv.innerHTML = ''; // Limpa o conteúdo anterior
+
+                if (produtos.length === 0) {
+                    relatorioConteudoDiv.innerHTML = '<p>Nenhum produto para exibir no relatório.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+
+                // Cabeçalho da tabela
+                const headerRow = document.createElement('tr');
+                const thNome = document.createElement('th');
+                thNome.textContent = 'Nome do Produto';
+                const thImagem = document.createElement('th');
+                thImagem.textContent = 'Imagem';
+                const thQuantidade = document.createElement('th');
+                thQuantidade.textContent = 'Quantidade Atual';
+
+                headerRow.appendChild(thNome);
+                headerRow.appendChild(thImagem);
+                headerRow.appendChild(thQuantidade);
+                thead.appendChild(headerRow);
+
+                // Corpo da tabela
+                produtos.forEach(produto => {
+                    const row = document.createElement('tr');
+
+                    const tdNome = document.createElement('td');
+                    tdNome.textContent = produto.nome;
+
+                    const tdImagem = document.createElement('td');
+                    const imgRelatorio = document.createElement('img');
+                    imgRelatorio.src = produto.imagemUrl || 'https://via.placeholder.com/50?text=N/A';
+                    imgRelatorio.alt = produto.nome;
+                    tdImagem.appendChild(imgRelatorio);
+
+                    const tdQuantidade = document.createElement('td');
+                    tdQuantidade.textContent = produto.quantidade;
+
+                    row.appendChild(tdNome);
+                    row.appendChild(tdImagem);
+                    row.appendChild(tdQuantidade);
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                relatorioConteudoDiv.appendChild(table);
+            }
+
+            // Renderiza a lista inicial (caso haja dados persistidos, o que não é o caso aqui)
+            renderizarListaProdutos();
+        });
+    </script>
+
+</body>
+</html>
