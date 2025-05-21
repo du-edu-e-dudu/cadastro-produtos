@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Produtos</title>
     <style>
-        /* Estilos Base */
+        /* Estilos Base (MESMO DO ANTERIOR, SEM MUDANÇAS AQUI) */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -115,7 +115,7 @@
         #productTable th, #productTable td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left; /* Padrão para desktop */
+            text-align: left;
             vertical-align: middle;
             white-space: normal;
         }
@@ -131,7 +131,7 @@
             object-fit: cover;
             border-radius: 4px;
             display: block;
-            margin: 0 auto; /* Centraliza a imagem no desktop */
+            margin: 0 auto;
         }
 
         /* Estilos do Modal */
@@ -179,11 +179,11 @@
         .report-item {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centraliza itens */
+            align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px dashed #eee;
-            text-align: center; /* Centraliza texto */
+            text-align: center;
         }
 
         .report-item:last-child {
@@ -214,7 +214,7 @@
             margin-top: 20px;
         }
 
-        /* Media Queries para Telas Menores (smartphones e tablets pequenos) */
+        /* Media Queries para Telas Menores (MESMO DO ANTERIOR, SEM MUDANÇAS AQUI) */
         @media (max-width: 768px) {
             .container {
                 margin: 5px auto;
@@ -235,7 +235,6 @@
                 font-size: 0.95em;
             }
 
-            /* Botões de formulário: 2 colunas */
             .form-section button {
                 width: calc(50% - 12px);
                 box-sizing: border-box;
@@ -247,7 +246,6 @@
                 margin-right: 0;
             }
 
-            /* Adaptação da Tabela para telas pequenas (modo "cards") */
             #productTable {
                 display: block;
                 overflow-x: hidden;
@@ -271,12 +269,12 @@
                 background-color: #fff;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
                 padding: 10px;
-                text-align: center; /* Centraliza o conteúdo do card TR */
+                text-align: center;
             }
 
             #productTable td {
                 display: block;
-                text-align: center; /* Garante que o texto dentro do TD esteja centralizado */
+                text-align: center;
                 border: none;
                 padding: 5px 0;
                 position: relative;
@@ -299,12 +297,12 @@
             #productTable td img {
                 max-width: 60px;
                 max-height: 60px;
-                margin: 0 auto 5px auto; /* Centraliza a imagem no card */
+                margin: 0 auto 5px auto;
             }
 
             .product-actions {
                 display: flex;
-                justify-content: center; /* Centraliza os botões de ação */
+                justify-content: center;
                 flex-wrap: wrap;
                 margin-top: 5px;
             }
@@ -316,7 +314,6 @@
                 padding: 6px 10px;
             }
 
-            /* Estilos para o relatório HTML dentro do modal em telas menores */
             .report-item {
                 flex-direction: column;
                 align-items: center;
@@ -328,7 +325,6 @@
             }
         }
 
-        /* Ajustes para telas muito pequenas (ex: largura de 320px) */
         @media (max-width: 480px) {
             h1 { font-size: 1.5em; }
             h2 { font-size: 1.2em; }
@@ -350,7 +346,7 @@
             }
         }
 
-        /* Estilos específicos para o relatório HTML baixado */
+        /* Estilos específicos para o relatório HTML baixado (MESMO DO ANTERIOR, SEM MUDANÇAS AQUI) */
         .report-html-body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -468,20 +464,128 @@
     </div>
 
     <script>
+        // Variável para a instância do banco de dados IndexedDB
+        let db;
+        // Nome do banco de dados e da "object store" (tabela)
+        const DB_NAME = 'ProductDB';
+        const STORE_NAME = 'products';
+        const DB_VERSION = 1; // Incrementar se mudar a estrutura do DB
+
+        // Array local para armazenar os produtos (sincronizado com o IndexedDB)
         let products = [];
 
-        function loadProductsFromLocalStorage() {
-            const storedProducts = localStorage.getItem('productsData');
-            if (storedProducts) {
-                products = JSON.parse(storedProducts);
-            }
+        // --- Funções de interação com IndexedDB ---
+
+        // Função para abrir/criar o banco de dados
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    // Esta função é chamada se o DB não existe ou se a versão for maior
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        // Cria a object store para os produtos, com 'id' como chave primária
+                        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        // Opcional: criar índices para buscas rápidas (ex: por nome)
+                        objectStore.createIndex('name', 'name', { unique: false });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log('IndexedDB aberto com sucesso!');
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error('Erro ao abrir IndexedDB:', event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
         }
 
-        function saveProductsToLocalStorage() {
-            localStorage.setItem('productsData', JSON.stringify(products));
+        // Função para adicionar um produto ao IndexedDB
+        function addProductDB(product) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.add(product);
+
+                request.onsuccess = () => {
+                    console.log('Produto adicionado ao IndexedDB:', product);
+                    // Adiciona o ID gerado pelo IndexedDB ao produto local
+                    product.id = request.result;
+                    resolve(product);
+                };
+
+                request.onerror = (event) => {
+                    console.error('Erro ao adicionar produto ao IndexedDB:', event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // Função para obter todos os produtos do IndexedDB
+        function getAllProductsDB() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+
+                request.onsuccess = () => {
+                    resolve(request.result);
+                };
+
+                request.onerror = (event) => {
+                    console.error('Erro ao obter produtos do IndexedDB:', event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
+        }
+
+        // Função para atualizar um produto no IndexedDB
+        function updateProductDB(product) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.put(product); // 'put' atualiza se existir, adiciona se não existir
+
+                request.onsuccess = () => {
+                    console.log('Produto atualizado no IndexedDB:', product);
+                    resolve();
+                };
+
+                request.onerror = (event) => {
+                    console.error('Erro ao atualizar produto no IndexedDB:', event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
+        }
+
+        // Função para deletar um produto do IndexedDB
+        function deleteProductDB(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+
+                request.onsuccess = () => {
+                    console.log('Produto excluído do IndexedDB:', id);
+                    resolve();
+                };
+
+                request.onerror = (event) => {
+                    console.error('Erro ao excluir produto do IndexedDB:', event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
+        }
+
+
+        // --- Lógica da Aplicação (usando as funções do IndexedDB) ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
             const addProductBtn = document.getElementById('addProductBtn');
             const generateReportBtn = document.getElementById('generateReportBtn');
             const productList = document.getElementById('productList');
@@ -490,8 +594,15 @@
             const reportContent = document.getElementById('reportContent');
             const downloadReportBtn = document.getElementById('downloadReportBtn');
 
-            loadProductsFromLocalStorage();
-            renderProductList();
+            // 1. Abrir o banco de dados e carregar produtos ao iniciar
+            try {
+                await openDB();
+                products = await getAllProductsDB(); // Carrega todos os produtos do DB
+                renderProductList(); // Renderiza a lista com os dados carregados
+            } catch (error) {
+                console.error('Falha ao inicializar o IndexedDB ou carregar produtos:', error);
+                alert('Não foi possível carregar os produtos. Verifique o console para mais detalhes.');
+            }
 
             addProductBtn.addEventListener('click', addProduct);
             generateReportBtn.addEventListener('click', generateReport);
@@ -503,7 +614,7 @@
                 }
             });
 
-            function addProduct() {
+            async function addProduct() {
                 const productNameInput = document.getElementById('productName');
                 const productQuantityInput = document.getElementById('productQuantity');
                 const productImageInput = document.getElementById('productImage');
@@ -523,31 +634,44 @@
 
                 let imageUrl = '';
                 if (imageFile) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imageUrl = e.target.result;
-                        createProduct({ name, quantity, imageUrl });
-                    };
-                    reader.readAsDataURL(imageFile);
-                } else {
-                    createProduct({ name, quantity, imageUrl: '' });
+                    // Usar FileReader para converter a imagem em Data URL
+                    imageUrl = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = (e) => reject(e);
+                        reader.readAsDataURL(imageFile);
+                    }).catch(error => {
+                        console.error("Erro ao ler arquivo de imagem:", error);
+                        alert("Não foi possível ler a imagem. Tente novamente.");
+                        return ''; // Retorna string vazia se falhar
+                    });
                 }
 
-                productNameInput.value = '';
-                productQuantityInput.value = '0';
-                productImageInput.value = '';
-            }
+                const newProduct = { name, quantity, imageUrl };
 
-            function createProduct(product) {
-                products.push(product);
-                renderProductList();
-                saveProductsToLocalStorage();
+                try {
+                    // Adicionar ao IndexedDB e depois ao array local
+                    const addedProduct = await addProductDB(newProduct);
+                    products.push(addedProduct); // Adiciona o produto com o ID gerado pelo DB
+                    renderProductList();
+                    // Limpar campos
+                    productNameInput.value = '';
+                    productQuantityInput.value = '0';
+                    productImageInput.value = '';
+                } catch (error) {
+                    alert('Erro ao adicionar produto: ' + error);
+                    console.error(error);
+                }
             }
 
             function renderProductList() {
                 productList.innerHTML = '';
-                products.forEach((product, index) => {
+                // Ordenar produtos pelo ID para manter a ordem consistente
+                products.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+                products.forEach((product) => {
                     const row = productList.insertRow();
+                    row.dataset.productId = product.id; // Armazena o ID do IndexedDB na linha
 
                     const imgCell = row.insertCell(0);
                     imgCell.setAttribute('data-label', 'Imagem');
@@ -567,7 +691,8 @@
                     const quantityCell = row.insertCell(2);
                     quantityCell.setAttribute('data-label', 'Quantidade');
                     quantityCell.textContent = product.quantity;
-                    quantityCell.id = `quantity-${index}`;
+                    // Não use ID baseado em índice para quantidades, pois índices mudam
+                    // quantityCell.id = `quantity-${product.id}`; // Melhor usar ID do DB
 
                     const actionsCell = row.insertCell(3);
                     actionsCell.setAttribute('data-label', 'Ações');
@@ -576,42 +701,63 @@
                     const decreaseBtn = document.createElement('button');
                     decreaseBtn.textContent = '-';
                     decreaseBtn.classList.add('quantity-btn');
-                    decreaseBtn.addEventListener('click', () => updateQuantity(index, -1));
+                    decreaseBtn.addEventListener('click', () => updateQuantity(product.id, -1));
                     actionsCell.appendChild(decreaseBtn);
 
                     const increaseBtn = document.createElement('button');
                     increaseBtn.textContent = '+';
                     increaseBtn.classList.add('quantity-btn');
-                    increaseBtn.addEventListener('click', () => updateQuantity(index, 1));
+                    increaseBtn.addEventListener('click', () => updateQuantity(product.id, 1));
                     actionsCell.appendChild(increaseBtn);
 
                     const deleteBtn = document.createElement('button');
                     deleteBtn.textContent = 'Excluir';
                     deleteBtn.classList.add('delete-btn');
-                    deleteBtn.addEventListener('click', () => deleteProduct(index));
+                    deleteBtn.addEventListener('click', () => deleteProduct(product.id));
                     actionsCell.appendChild(deleteBtn);
                 });
             }
 
-            function updateQuantity(index, change) {
-                if (products[index]) {
-                    const currentQuantity = products[index].quantity;
+            async function updateQuantity(productId, change) {
+                // Encontrar o produto no array local pelo ID
+                const productIndex = products.findIndex(p => p.id === productId);
+
+                if (productIndex !== -1) {
+                    const currentQuantity = products[productIndex].quantity;
                     const newQuantity = currentQuantity + change;
+
                     if (newQuantity >= 0) {
-                        products[index].quantity = newQuantity;
-                        document.getElementById(`quantity-${index}`).textContent = newQuantity;
-                        saveProductsToLocalStorage();
+                        products[productIndex].quantity = newQuantity;
+                        
+                        // Atualizar no IndexedDB
+                        try {
+                            await updateProductDB(products[productIndex]);
+                            // Atualizar a UI para a quantidade correta (melhor procurar a célula pela ID da linha)
+                            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                            if (row) {
+                                const quantityCell = row.cells[2]; // Assumindo que Quantidade é a 3ª célula (índice 2)
+                                quantityCell.textContent = newQuantity;
+                            }
+                        } catch (error) {
+                            alert('Erro ao atualizar quantidade: ' + error);
+                            console.error(error);
+                        }
                     } else {
                         alert('A quantidade não pode ser negativa.');
                     }
                 }
             }
 
-            function deleteProduct(index) {
+            async function deleteProduct(productId) {
                 if (confirm('Tem certeza que deseja excluir este produto?')) {
-                    products.splice(index, 1);
-                    renderProductList();
-                    saveProductsToLocalStorage();
+                    try {
+                        await deleteProductDB(productId); // Excluir do IndexedDB
+                        products = products.filter(p => p.id !== productId); // Remover do array local
+                        renderProductList(); // Re-renderizar a lista
+                    } catch (error) {
+                        alert('Erro ao excluir produto: ' + error);
+                        console.error(error);
+                    }
                 }
             }
 
